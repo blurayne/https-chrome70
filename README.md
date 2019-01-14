@@ -94,7 +94,7 @@ Everything is put into a Makefile to make easy customization possible.
 
 ### Usage 
 
-#### Prerequesites: Host Entries and Ports
+#### Prerequisites: Host Entries and Ports
 
 Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localhost this is not required on Native Linux). Also ensure nothing is running on `:80` or `:443` by `sudo lsof -i :80 -i :443 -sTCP:LISTEN`
 
@@ -102,8 +102,6 @@ Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localho
 ``` 
 127.0.0.1 www.dev.localhost sub.dev.localhost localhost dev.localhost
 ```
-
-
 #### 1. Generate Root CA
 
 1. Specify option by the ```ROOT_CA_*``` keys in the ```Makefile```.
