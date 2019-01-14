@@ -1,0 +1,74 @@
+###
+# ATTENTION: This file was generated from a template!
+##
+
+server {
+    listen       80;
+    listen       [::]:80;
+    server_name  *.minica;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+
+server {
+
+    listen              443 ssl http2;
+    listen              [::]:443 ssl http2;
+    server_name         *.localhost;
+
+    ssl_certificate     /nginx/cert/${CERT_NAME}.pem;
+    ssl_certificate_key /nginx/cert/${CERT_NAME}.key;
+
+    # ssl_protocols       TLSv1 TLSv1.1 TLSv1.2; # definiert die Protokolle
+    # ssl_ciphers         HIGH:!aNULL:!MD5; # definiert die Ciphersuites
+
+    # debug log output
+    error_log /dev/stderr debug;
+    
+    # ssl_protocols TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
+    ssl_dhparam /etc/nginx/cert/dhparam.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    # hstspreload.org
+    # add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # disable hsts caching
+    add_header Strict-Transport-Security "max-age=0; includeSubDomains";
+    
+    # Header unset Strict-Transport-Security
+    # Header always set Strict-Transport-Security "max-age=0;includeSubDomains"
+
+    # ssl_stapling on;
+    # ssl_trusted_certificate /pfad/bundle.ca.pem;
+    # ssl_stapling_verify on;
+
+    # ssl_session_timeout 10m;
+    # ssl_session_cache off;
+    # ssl_session_tickets on;
+    # ssl_session_ticket_key /pfad/nginx_ticketkey;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+}
+
