@@ -16,14 +16,14 @@ ROOT_CA_SUBJECT=$(SUBJECT)/CN=$(ROOT_CA_NAME)
 
 # Server cert
 # CERT_NAME should be the domain name requires at least "hostname.tld"! Use only FQDN in browser!
-CERT_NAME=www.dev.localhost
-CERT_ALT_DOMAINS=$(CERT_NAME) \*.$(CERT_NAME) localhost
+CERT_NAME=dev.localhost
+CERT_ALT_DOMAINS=$(CERT_NAME) \*.$(CERT_NAME) \*.localhost localhost sub.localhost
 CERT_ALT_IPS=127.0.0.1 ::1
 CERT_EXPIRE_DAYS=265
 CERT_SUBJECT=$(SUBJECT)/CN=$(CERT_NAME)
 
 # Domains to test
-TEST_DOMAINS=$(CERT_NAME) www.$(CERT_NAME) sub.$(CERT_NAME) localhost
+TEST_DOMAINS=$(CERT_NAME) www.dev.localhost sub.dev.localhost localhost
 TEST_IPS=$(CERT_ALT_IPS)
 
 CONTAINER_OPTS=--name $(DOCKER_CONTAINER_NAME) -p 80:80 -p 443:443 -v $$(pwd)/nginx/conf.d/:/etc/nginx/conf.d/ -v $$(pwd)/nginx/cert:/nginx/cert/ $(DOCKER_IMAGE)

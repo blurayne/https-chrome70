@@ -94,6 +94,16 @@ Everything is put into a Makefile to make easy customization possible.
 
 ### Usage 
 
+#### Prerequesites: Host Entries and Ports
+
+Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localhost this is not required on Native Linux). Also ensure nothing is running on `:80` or `:443` by `sudo lsof -i :80 -i :443 -sTCP:LISTEN`
+
+##### /etc/hosts 
+``` 
+127.0.0.1 www.dev.localhost sub.dev.localhost localhost dev.localhost
+```
+
+
 #### 1. Generate Root CA
 
 1. Specify option by the ```ROOT_CA_*``` keys in the ```Makefile```.
@@ -126,7 +136,8 @@ Please review the ```Makefile``` on what exactly happens.
 
 #### 4. Testing in Browser
 
-1. Launch your favorite browser, follow  and don't forget to use ```https://```-prefix!
+1. Launch your favorite browser and don't forget to use ```https://```-prefix!
+2. You can use ```make generate-cert run-container-attached``` to play around with certificate alt-names!
 
 
 
