@@ -1,5 +1,3 @@
-.PHONY: root-ca
-.PHONY: server-ca
 SHELL := /bin/bash
 PWD:=$(shell pwd)
 
@@ -8,21 +6,21 @@ DOCKER_IMAGE=https-localcert:dev-latest
 DOCKER_CONTAINER_NAME=https-localcert
 
 # Common subhect
-SUBJECT=/C=DE/ST=BY/L=Munich/O=BigAssCorporate
+SUBJECT=/C=DE/ST=Bavaria/L=Munich/O=BigAssCorporate/OU=Development
 
 # Root cert
 ROOT_CA_NAME=localhost
 ROOT_CA_PASSWORD=letmein
 ROOT_CA_EXPIRE_DAYS=3654
-ROOT_CA_SUBJECT=$(SUBJECT)/OU=Development/CN=$(ROOT_CA_NAME)
+ROOT_CA_SUBJECT=$(SUBJECT)/CN=$(ROOT_CA_NAME)
 
 # Server cert
 # CERT_NAME should be the domain name requires at least "hostname.tld"! Use only FQDN in browser!
-CERT_NAME=dev.localhost
+CERT_NAME=www.dev.localhost
 CERT_ALT_DOMAINS=$(CERT_NAME) \*.$(CERT_NAME) localhost
 CERT_ALT_IPS=127.0.0.1 ::1
 CERT_EXPIRE_DAYS=265
-CERT_SUBJECT=$(SUBJECT)/OU=Development/CN=$(CERT_NAME)
+CERT_SUBJECT=$(SUBJECT)/CN=$(CERT_NAME)
 
 # Domains to test
 TEST_DOMAINS=$(CERT_NAME) www.$(CERT_NAME) sub.$(CERT_NAME) localhost
@@ -54,7 +52,7 @@ clean-container:
 	cp -v cert/$(CERT_NAME).pem  nginx/cert/$(CERT_NAME).pem
 	cp -v cert/$(CERT_NAME).key  nginx/cert/$(CERT_NAME).key
 	rm -f nginx/conf.d/*
-	export CERT_NAME=$(CERT_NAME) && cat nginx/templ/vhost.conf.templ | envsubst > nginx/conf.d/$(CERT_NAME).conf
+	export CERT_NAME=$(CERT_NAME) SERVERNAME=\*.$(ROOT_CA_NAME) && cat nginx/templ/vhost.conf.templ | envsubst '$$SERVERNAME$$CERT_NAME' > nginx/conf.d/$(CERT_NAME).conf
  
 run-container-deamon: clean-container -prepare-container-config
 	docker run -d $(CONTAINER_OPTS) 
@@ -155,7 +153,6 @@ view-cert:
 
 ##
 # install
-
 
 install-root-ca:
 	if grep -q Microsoft /proc/version; then \
