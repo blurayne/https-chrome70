@@ -14,7 +14,6 @@ server {
     location = /50x.html {
         root   /usr/share/nginx/html;
     }
-   
 }
 
 server {
@@ -26,12 +25,10 @@ server {
     ssl_certificate     /nginx/cert/${CERT_NAME}.pem;
     ssl_certificate_key /nginx/cert/${CERT_NAME}.key;
 
-
-    # debug log output
     error_log /dev/stderr debug;
     access_log  /dev/stdout main;
-    
-    # ssl_protocols TLSv1.1 TLSv1.2;
+
+    # Trusted Ciphers  
     ssl_prefer_server_ciphers on;
     ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
     ssl_dhparam /etc/nginx/cert/dhparam.pem;
@@ -40,21 +37,18 @@ server {
     # hstspreload.org
     # add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     
-    # disable hsts caching
+    # Unset Strict-Transport-Security and disable HSTS caching
     add_header Strict-Transport-Security "max-age=0; includeSubDomains";
     
-    # Header unset Strict-Transport-Security
-    # Header always set Strict-Transport-Security "max-age=0;includeSubDomains"
-
+    # Header    
     # ssl_stapling on;
-    # ssl_trusted_certificate /pfad/bundle.ca.pem;
+    # ssl_trusted_certificate /path/bundle.ca.pem;
     # ssl_stapling_verify on;
 
     # ssl_session_timeout 10m;
     # ssl_session_cache off;
     # ssl_session_tickets on;
-    # ssl_session_ticket_key /pfad/nginx_ticketkey;
-
+    # ssl_session_ticket_key /path/nginx_ticketkey;
 
     location / {
         root   /usr/share/nginx/html;
