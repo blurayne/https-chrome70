@@ -5,7 +5,7 @@ PWD:=$(shell pwd)
 DOCKER_IMAGE=https-localcert:dev-latest
 DOCKER_CONTAINER_NAME=https-localcert
 
-# Common subhect
+# Common subject
 SUBJECT=/C=DE/ST=Bavaria/L=Munich/O=BigAssCorporate/OU=Development
 
 # Root cert

@@ -10,11 +10,11 @@ HTTPS and security in overall is becoming more and more important:
 * Micro-Services security (though you it's often just simple private/public key SSL)
 * Attacks on Office W/LANs or Home Networks
 
-You simple don't want a development with security-off and then be suprised by:
+You simple don't want off-security development and hit surprises like:
 
-* Things stopping working on deployment into production because suddenly security restrictions are in place and you simple ignored them in development
+* Things stopping working on deployment because suddenly security restrictions into production are in place and you simply ignored them in development
 * Having ignored [Content Security Polices (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)  or other web security models
-* Your Facebook account owned by a Hacker because you browsed the web with disabled XSS on your development browser only to make your app work since you didn't do your homework.
+* Worse: Your Facebook account was owned by a Hacker because you browsed the web with disabled XSS on your development browser only to make your app work since you didn't do your homework.
 
 ## How does SSL work?
 
@@ -25,30 +25,30 @@ You simple don't want a development with security-off and then be suprised by:
 - The web server sends back a digitally signed acknowledgement to start an SSL encrypted session.
 - Encrypted data is shared between the browser/server and the web server.
 
-## What we do here?
+## What do we do here?
 
 * We use a ``Makefile`` to automate the whole process and can easily be customized
 * We create a local root authority which will be used by systems to verify the validity of services
 * We create a server certificate and test with HTTPS request on a docker based nginx 
 * Of course the certificate authority (CA) has to be imported first to  to your client system(s)
 
-## What we do *not* do here?
+## What do we *not* do here?
 
 - We do not create intermediate certificates (but should be easy to add)
 - We do not create revocation lists
 - We do not create certificates for use on the Internet. 
 
-## Where to use?
+## Where to use those certificates?
 
 * Only on your local machine or your LAN! 
 
 ## Where do I get Trusted Certificates for my Website?
 
-Use [Let's Encrypt](https://letsencrypt.org/) with [SSL For Free](https://www.sslforfree.com/ ) or [ACME.sh](https://github.com/Neilpang/acme.sh) services!
+Please use [Let's Encrypt](https://letsencrypt.org/) with [SSL For Free](https://www.sslforfree.com/ ) or [ACME.sh](https://github.com/Neilpang/acme.sh) services.
 
-ACME Services are now provided in most modern cloud applications like Envoy, Kong or traefik. Make sure HTTPS challenges are public and auto-refresh works!
+ACME Services are now provided in most modern cloud applications like Envoy, Kong or traefik. Make sure ACME challenges are public and auto-refresh works!
 
-If you're bound to your provider or corporation's insecurity policy make sure to know when you're certificates will expire or become invalid (e.g Symantec Distrust with Chrome 66). 
+If you're bound to your provider or corporation's insecurity policy make sure to know when you're certificates will expire or become invalid (e.g. Symantec Distrust with Chrome 66). 
 
 ## Requirements
 
@@ -62,8 +62,8 @@ If you're bound to your provider or corporation's insecurity policy make sure to
 
 |Name|Description|
 |---|---|
-|**HTTPS**|HTTP for Secure Communication. The [communication protocol](https://en.wikipedia.org/wiki/Communication_protocol) is [encrypted](https://en.wikipedia.org/wiki/Encrypted) using [Transport Layer Security](https://en.wikipedia.org/wiki/Transport_Layer_Security) (TLS), or, formerly, its predecessor, Secure Sockets Layer (SSL). ```S``` does not stand for SSL!|
-|**H2, HTTPS/2**|Successor to HTTP/1.1 with multiplexing. The Standard itself does not require usage of encryption, but all major client implementations (Firefox, Chrome, Safari, Opera, IE, Edge) have stated that they will only support HTTP/2 over TLS,|
+|**HTTPS**|HTTP for Secure Communication. The [communication protocol](https://en.wikipedia.org/wiki/Communication_protocol) is [encrypted](https://en.wikipedia.org/wiki/Encrypted) using [Transport Layer Security](https://en.wikipedia.org/wiki/Transport_Layer_Security) (TLS), or, formerly, its predecessor, Secure Sockets Layer (SSL). Note: ```S``` does not stand for SSL!|
+|**H2, HTTPS/2**|Successor to HTTP/1.1 with multiplexing. The Standard itself does not require usage of encryption, but all major client implementations (Firefox, Chrome, Safari, Opera, IE, Edge) have stated that they will only support HTTP/2 over TLS.|
 |**FQDN**|Fully qualified domain name like http://subdomain.domain.tld|
 | **CA** | Certification Authority which is used to verify against |
 | **Root-CA** | Top-Level Authority|
@@ -98,13 +98,13 @@ Everything is put into a Makefile to make easy customization possible.
 
 ##### Prerequisites: Host Entries and Ports
 
-Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localhost this is not required on Native Linux). Also ensure nothing is running on `:80` or `:443` by `sudo lsof -i :80 -i :443 -sTCP:LISTEN`
+Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localhost this is not required on native Linux). Also ensure nothing is running on ports `:80` or `:443` by `sudo lsof -i :80 -i :443 -sTCP:LISTEN`
 
-##### /etc/hosts 
+##### Example Entry to /etc/hosts:
 ``` 
 127.0.0.1 www.dev.localhost sub.dev.localhost localhost dev.localhost
 ```
-#### 1. Generate Root CA
+#### Generate Root CA
 
 1. Specify option by the ```ROOT_CA_*``` keys in the ```Makefile```.
 2. Mind the ```ROOT_CA_PASSWORD```. This can' be changed later and must not be empty!
@@ -115,15 +115,15 @@ Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localho
 
 From on here this should not be touched again. The Root CA can be distributed to all machines that need to verify the certificate in the next step.
 
-#### 2. Generate Server Certificate
+#### Generate Server Certificate
 
-1. Specify your domains in ```CERT_ALT_DOMAINS``` and ```CERT_ALT_IPS``` within the ```Makefile```.  Make sure to escape with ```\*.mydomain.tld``` when using wildcards!
+1. Specify your domains in ```CERT_ALT_DOMAINS``` and ```CERT_ALT_IPS``` within the ```Makefile```.  Make sure to escape with ```\*.mydomain.tld``` when using wild cards!
 
 2. Generate a Root CA by ```make generate-root-ca ``` 
 
 Note that the generated *private key* and *signing request* will not get deleted.  You have to run ``make clean-cert` first or delete manually!
 
-#### 3. Testing in CLI
+#### Testing in CLI
 
 1. First build docker image by ```make build-docker-image```
 2. Adjust URLs and IPs to be testing in ```TEST_DOMAINS``` and ```TEST_IPS``` within the ```Makefile```.
@@ -193,6 +193,8 @@ cat root-ca/localhost.pem 2>&1 \
 	| certutil -d sql:$$HOME/.pki/nssdb -A -t "TCu,Cu,Tu" -n "$(ROOT_CA_DOMAIN)"
 ```
 
+https://chromium.googlesource.com/chromium/src/+/HEAD/docs/linux_cert_management.md
+
 
 
 ## Importing Root CA Browsers
@@ -228,7 +230,8 @@ For those curious these are the main requirements for Chrome 70 and Firefox not 
 - correct ```keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment```
 - secure ciphers to be used on server side (see nginx configs!)
 - Only FQDN our fully supported in browser
-   *(while Chrome shows green for dev.localhost Firefox won't!)*
+   *(while Chrome shows green for dev.localhost Firefox won't!)
+- Mind that HSTS checks will be cached in your browser ([chrome://net-internals/#hsts](chrome://net-internals/#hsts))
 
 ## Trackback
 
