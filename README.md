@@ -10,9 +10,9 @@ HTTPS and security in overall is becoming more and more important:
 
 You simple don't want a development with security-off and then be suprised by:
 
-* things stopping working by since production has all security restrictions in place and you simple ignored them in development
-* having ignored [Content Security Polices (CSP)]() https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)  or other web security models
-* your Facebook account beeing owned by a Hacker simply because you browsed the web with disabled XSS on your development browser to make your app work
+* Things stopping working on deployment into production because suddenly security restrictions are in place and you simple ignored them in development
+* Having ignored [Content Security Polices (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)  or other web security models
+* Your Facebook account owned by a Hacker because you browsed the web with disabled XSS on your development browser only to make your app work since you didn't do your homework.
 
 ## How does SSL work?
 
@@ -221,7 +221,6 @@ For those curious these are the main requirements for Chrome 70 and Firefox not 
 
 ## Trackback
 
-* https://github.com/redredgroovy/easy-ca
-
-* https://bjornjohansen.no/public-key-pinning
+* https://github.com/redredgroovy/easy-ca – probably will get updated once know-how on valid Chrome70 certs has spread
+* https://bjornjohansen.no/public-key-pinning – security: why HSTS is not enough
 
