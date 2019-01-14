@@ -1,5 +1,7 @@
 # Using self-signed HTTPS certificates (supporting Chrome 70)
 
+![547484864559](logo.png)
+
 ## Target Audience
 
 HTTPS and security in overall is becoming more and more important:
@@ -94,7 +96,7 @@ Everything is put into a Makefile to make easy customization possible.
 
 ### Usage 
 
-#### Prerequisites: Host Entries and Ports
+##### Prerequisites: Host Entries and Ports
 
 Make sure your testing domains  ```/etc/hosts``` point to 127.0.0.1 (for localhost this is not required on Native Linux). Also ensure nothing is running on `:80` or `:443` by `sudo lsof -i :80 -i :443 -sTCP:LISTEN`
 
