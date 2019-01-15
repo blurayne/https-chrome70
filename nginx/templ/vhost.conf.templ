@@ -28,9 +28,11 @@ server {
     error_log /dev/stderr debug;
     access_log  /dev/stdout main;
 
-    # Trusted Ciphers  
+    # Trusted Ciphers - commnet out this lines if you run into "strange" errors
     ssl_prefer_server_ciphers on;
-    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
+    # ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384;
+    ssl_ecdh_curve secp384r1;
     ssl_dhparam /etc/nginx/cert/dhparam.pem;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
