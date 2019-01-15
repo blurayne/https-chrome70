@@ -109,6 +109,9 @@ generate-root-ca:
 	openssl x509 -in root-ca/$(ROOT_CA_NAME).pem -out root-ca/$(ROOT_CA_NAME).crt -inform PEM; \
 
 generate-cert:
+	# elliptic curve
+	# openssl ecparam -name secp256k1 -out secp256k1.PEM
+
 	# generate the server private key
 	if [[ ! -e "cert/$(CERT_NAME).key" ]]; then \
 		openssl genrsa -out cert/$(CERT_NAME).key 2048; \
@@ -141,9 +144,6 @@ generate-cert:
 
     # connvert 
 	openssl x509 -in cert/$(CERT_NAME).crt -out cert/$(CERT_NAME).pem -outform PEM
-
- 	# elliptic curve
-	# openssl ecparam -name secp256k1 -out secp256k1.PEM
 
 view-root-ca:
 	openssl x509 -noout -text -in root-ca/$(ROOT_CA_NAME).crt

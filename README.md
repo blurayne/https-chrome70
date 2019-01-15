@@ -52,6 +52,7 @@ sequenceDiagram
 - We do not create intermediate certificates (but should be easy to add)
 - We do not create revocation lists
 - We do not create certificates for use on the Internet. 
+- Wo do not create ECC certificates (but should be easy to replace if needed)
 
 ## Where to use those certificates?
 
@@ -245,7 +246,9 @@ Chrome on Linux uses NSSDB. If you hit problems after playing around with certs 
 | **PEM**               | Governed by RFCs, its used preferentially by open-source software. It can have a variety of extensions (.pem, .key, .cer, .cert, more) |
 | **PKCS7**             | An open standard used by Java and supported by Windows. Does not contain private key material. |
 | **PKCS12**            | A Microsoft private standard that was later defined in an RFC that provides enhanced security versus the plain-text PEM format. This can contain private key material. Its used preferentially by Windows systems, and can be freely converted to PEM format through use of openssl. |
-| **DER**               | he parent format of PEM. It's useful to think of it as a binary version of the base64-encoded PEM file. Not routinely used very much outside of Windows. |
+| **DER**               | The parent format of PEM. It's useful to think of it as a binary version of the base64-encoded PEM file. Not routinely used very much outside of Windows. |
+| **RSA**               | Default encryption for SSL. RSA encryption is a public-key encryption technology developed by RSA Data Security. The RSA algorithm is based on the difficulty in factoring very large numbers. Based on this principle, the RSA encryption algorithm uses prime factorization as the trap door for encryption. Deducing an RSA key, therefore, takes a huge amount of time and processing power. |
+| **ECC**               | ECC uses a smaller algorithm to generate keys that are exponentially stronger than RSA keys. The smaller algorithm means less data is being verified between the server and the client, which translates to increased network performance. This is especially important for websites that experience a high level of traffic. |
 | **Subject**           | C= Country Name (2 letter code): DE<br />S= State or Province Name (full name) : Bavaria<br />L = Locality Name (eg, city): Munich<br />O= Organization Name (eg, company): Big Ass Corporate Ltd.<br />OU = Organizational Unit Name (eg, section): ---<br />CN = Common Name (eg, YOUR name): example.com |
 
 Mostly taken from https://serverfault.com/questions/9708/what-is-a-pem-file-and-how-does-it-differ-from-other-openssl-generated-key-file
@@ -255,4 +258,5 @@ Mostly taken from https://serverfault.com/questions/9708/what-is-a-pem-file-and-
 
 * https://github.com/redredgroovy/easy-ca – probably will get updated once know-how on valid Chrome70 certs has spread
 * https://bjornjohansen.no/public-key-pinning – security: why HSTS is not enough
+* https://msol.io/blog/tech/create-a-self-signed-ecc-certificate/
 
