@@ -46,13 +46,13 @@ sequenceDiagram
 * We create a local root authority which will be used by systems to verify the validity of services
 * We create a server certificate and test with HTTPS request on a docker based nginx 
 * Of course the certificate authority (CA) has to be imported first to  to your client system(s)
+* We use ECC instead of RSA algorithm (can be switched `ALGORITHM` and `ECC_CURVE`)
 
 ## What do we *not* do here?
 
 - We do not create intermediate certificates (but should be easy to add)
 - We do not create revocation lists
 - We do not create certificates for use on the Internet. 
-- Wo do not create ECC certificates (but should be easy to replace if needed)
 
 ## Where to use those certificates?
 
@@ -105,7 +105,7 @@ Make sure your testing domains  `/etc/hosts` point to 127.0.0.1 (for localhost t
 3. Again, is your password really [secure](https://en.wikipedia.org/wiki/List_of_the_most_common_passwords)?
 4. Generate a Root CA by `make generate-root-ca`
 5. And import it by  `make install-root-ca` or following instructions in FAQ if it fails
-6. View generated certificate by  `make view-root-ca`
+6. View generated certificate by  `make show-root-ca`
 
 From on here this should not be touched again. The Root CA can be distributed to all machines that need to verify the certificate in the next step.
 
@@ -259,4 +259,4 @@ Mostly taken from https://serverfault.com/questions/9708/what-is-a-pem-file-and-
 * https://github.com/redredgroovy/easy-ca – probably will get updated once know-how on valid Chrome70 certs has spread
 * https://bjornjohansen.no/public-key-pinning – security: why HSTS is not enough
 * https://msol.io/blog/tech/create-a-self-signed-ecc-certificate/
-
+* https://wiki.openssl.org/index.php/Command_Line_Elliptic_Curve_Operations

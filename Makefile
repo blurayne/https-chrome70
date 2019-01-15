@@ -28,6 +28,15 @@ TEST_IPS=$(CERT_ALT_IPS)
 
 CONTAINER_OPTS=--name $(DOCKER_CONTAINER_NAME) -p 80:80 -p 443:443 -v $$(pwd)/nginx/conf.d/:/etc/nginx/conf.d/ -v $$(pwd)/nginx/cert:/nginx/cert/ $(DOCKER_IMAGE)
 
+# ecc | rsa
+ALGORITHM=ecc
+
+# 
+ECC_CURVE=prime256v1
+
+help:
+	make -qp | awk -F":" "/^[a-zA-Z0-9][^$$#\/\t=]*:([^=]|$$)/ {split(\$$1,A,/ /);for(i in A)print A[i]}" | sort
+
 ##
 # Cleanup
 
@@ -55,7 +64,8 @@ clean-container:
 	export CERT_NAME=$(CERT_NAME) SERVERNAME=\*.$(ROOT_CA_NAME) && cat nginx/templ/vhost.conf.templ | envsubst '$$SERVERNAME$$CERT_NAME' > nginx/conf.d/$(CERT_NAME).conf
  
 run-container-deamon: clean-container -prepare-container-config
-	docker run -d $(CONTAINER_OPTS) 
+	docker run -it -d $(CONTAINER_OPTS)
+
 
 run-container-attached: clean-container -prepare-container-config
 	docker run -it --rm $(CONTAINER_OPTS)
@@ -93,11 +103,26 @@ test-https-requests:
 ##
 # certificates
 
-generate-root-ca:
-	# generate the CA private key
-	if [[ ! -e "root-ca/$(ROOT_CA_NAME).key" ]]; then \
-		openssl genrsa -des3 -out root-ca/$(ROOT_CA_NAME).key -passout pass:"${ROOT_CA_PASSWORD}" 2048; \
+list-ecc-curves:	
+	openssl ecparam -list_curves
+
+-generate-cert-key-ecc:
+	if [[ ! -e "$(PREFIX).ecc" ]]; then \
+		openssl ecparam -name $(ECC_CURVE) -out $(PREFIX).ecc; \
 	fi
+	if [[ ! -e "$(PREFIX).key" ]]; then \
+		openssl ecparam -in $(PREFIX).ecc -genkey -noout -out $(PREFIX).key; \
+	fi
+
+-generate-cert-key-rsa:
+	if [[ ! -e "$(PREFIX).key" ]]; then \
+		openssl genrsa -out $(PREFIX).key 2048; \
+	fi
+	
+
+generate-root-ca:
+	# generate key
+	$(MAKE) -- -generate-cert-key-$(ALGORITHM) PREFIX=root-ca/$(ROOT_CA_NAME)
 
 	# generate the root CA file
 	if [[ ! -e "root-ca/$(ROOT_CA_NAME).pem" ]]; then \
@@ -105,17 +130,13 @@ generate-root-ca:
        	-passin pass:"${ROOT_CA_PASSWORD}" -subj "$(ROOT_CA_SUBJECT)"; \
 	fi
 
-	# connvert
+	# convert
 	openssl x509 -in root-ca/$(ROOT_CA_NAME).pem -out root-ca/$(ROOT_CA_NAME).crt -inform PEM; \
 
-generate-cert:
-	# elliptic curve
-	# openssl ecparam -name secp256k1 -out secp256k1.PEM
 
-	# generate the server private key
-	if [[ ! -e "cert/$(CERT_NAME).key" ]]; then \
-		openssl genrsa -out cert/$(CERT_NAME).key 2048; \
-	fi;
+generate-cert:
+	# generate key
+	$(MAKE) -- -generate-cert-key-$(ALGORITHM) PREFIX=cert/$(CERT_NAME)
 
 	# generate the certificate signing request (CSR)
 	if [[ ! -e "cert/$(CERT_NAME).csr" ]]; then \
@@ -145,11 +166,17 @@ generate-cert:
     # connvert 
 	openssl x509 -in cert/$(CERT_NAME).crt -out cert/$(CERT_NAME).pem -outform PEM
 
-view-root-ca:
+show-root-ca:
 	openssl x509 -noout -text -in root-ca/$(ROOT_CA_NAME).crt
 
-view-cert:
+show-cert:
 	openssl x509 -noout -text -in cert/$(CERT_NAME).crt
+
+show-cert-ecc:
+	openssl ecparam -in root-ca/$(ROOT_CA_NAME).ecc -text -noout
+
+show-root-ca-ecc:
+	openssl ecparam -in cert/$(CERT_NAME).ecc -text -noout
 
 ##
 # install
@@ -182,6 +209,7 @@ install-root-ca:
 -install-root-ca-linux: 
 	sudo cp -v root-ca/$(ROOT_CA_NAME).crt /usr/local/share/ca-certificates/$(ROOT_CA_NAME).crt
 	sudo update-ca-certificates --fresh
+	# NSS_DEFAULT_DB_TYPE should default to SQL
 	cat root-ca/$(ROOT_CA_NAME).pem 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' \
 		| certutil -d sql:$$HOME/.pki/nssdb -A -t "TCu,Cu,Tu" -n "$(ROOT_CA_NAME)"
 
