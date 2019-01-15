@@ -16,10 +16,6 @@ You simple don't want off-security development and hit surprises like:
 * Having ignored [Content Security Polices (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)  or other web security models!
 * Worse: Your Facebook account was owned by a Hacker because you browsed the web with disabled XSS on your development browser only to make your app work since you didn't do your homework!
 
-
-
-
-
 ## How does SSL work?
 
 ```mermaid
