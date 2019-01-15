@@ -16,17 +16,7 @@ You simple don't want off-security development and hit surprises like:
 * Having ignored [Content Security Polices (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)  or other web security models!
 * Worse: Your Facebook account was owned by a Hacker because you browsed the web with disabled XSS on your development browser only to make your app work since you didn't do your homework!
 
-```mermaid
-sequenceDiagram
-    Alice ->> Bob: Hello Bob, how are you?
-    Bob-->>John: How about you John?
-    Bob--x Alice: I am good thanks!
-    Bob-x John: I am good thanks!
-    Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
 
-    Bob-->Alice: Checking with John...
-    Alice->John: Yes... John, how are you?
-```
 
 
 
@@ -36,31 +26,23 @@ sequenceDiagram
 sequenceDiagram
     participant C as Client
 	participant S as Server
-    C->>S: Request secure connection
-    S->>C: Sends server public key (x509)
-    Note left of C: Checks if certificate can be trusted 
-    S->>C: Send symetric key and encrypt it by server's public key
-    Note over C,S: Symetric key is now known to both Client and Server
+    C->>S: (1) Request secure connection 
+    S->>C: (2) Sends server public key 
+    Note left of C:  (3) Checks if cert<br/>can be trusted 
+    C->>S: (4) Send encrypted payload with server's public key
+    S->>C: (5) Acknowledge SSL session
+    Note over C,S: (6) Symetric key is now known to<br/>both Client and Server<br/> and data can be exchanged
     
      
 ```
 
-```sequence
-participant Client
-participant Server
-    Client->>Server: Request secure connection
-    Server->>Client: Sends server public key
-    Note right of Client: Checks if certificate can be trusted 
-    Note over Client,Server: A typical interaction
-```
 
-
-- A browser attempts to connect to a web server secured with SSL. The browser/server requests that the web server identifies itself.
-- The web server sends the browser a copy of its SSL certificate.
-- The browser checks to see whether or not it trusts the SSL certificate using it's known [certificate authorities](https://en.wikipedia.org/Certificate_authority). Browsers are currently raising the bar for valid certificates using mechanisms like HSTS ([HTTP Strict Transport Security](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security))  or simply distrusting authorities like Symantic (Google).
-- If so, it sends a message to the web server.
-- The web server sends back a digitally signed acknowledgement to start an SSL encrypted session.
-- Encrypted data is shared between the browser/server and the web server.
+- A browser attempts to connect to a web server secured with SSL. The browser/server requests that the web server identifies itself. The Server Name will be in in clear text within the Header (SNI) (1) 
+- The web server sends the browser a copy of its x.509 public certificate (2)
+- The browser checks to see whether or not it trusts the SSL certificate using it's known [certificate authorities](https://en.wikipedia.org/Certificate_authority). Browsers are currently raising the bar for valid certificates using mechanisms like HSTS ([HTTP Strict Transport Security](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security))  or simply distrusting authorities like Symantic (Google). This is is also where our root certificate comes into place extending the list of trusted CAs (3)
+- If so, it sends back a message to the server encrypted by the server's public certificate (4)
+- The web server sends back a digitally signed acknowledgement to start an SSL encrypted session (5)
+- Now we have established data exchange by establishing a symmetric key encryption (6)
 
 ## What do we do here?
 
