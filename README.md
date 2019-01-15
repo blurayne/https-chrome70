@@ -236,7 +236,7 @@ Chrome on Linux uses NSSDB. If you hit problems after playing around with certs 
 | --------------------- | ------------------------------------------------------------ |
 | **HTTPS**             | HTTP for Secure Communication. The [communication protocol](https://en.wikipedia.org/wiki/Communication_protocol) is [encrypted](https://en.wikipedia.org/wiki/Encrypted) using [Transport Layer Security](https://en.wikipedia.org/wiki/Transport_Layer_Security) (TLS), or, formerly, its predecessor, Secure Sockets Layer (SSL). Note: 🅂 does not stand for SSL! |
 | **H2, HTTPS/2**       | Successor to HTTP/1.1 with multiplexing. The Standard itself does not require usage of encryption, but all major client implementations (Firefox, Chrome, Safari, Opera, IE, Edge) have stated that they will only support HTTP/2 over TLS. |
-| **FQDN**              | Fully qualified domain name like http://subdomain.domain.tld |
+| **FQDN**              | Fully qualified domain name like `http://subdomain.domain.tld` |
 | **CA**                | Certification Authority which is used to verify against      |
 | **Root-CA**           | Top-Level Authority                                          |
 | **Intermediate-CA**   | Every Authority between the Root and your browser            |
