@@ -260,3 +260,5 @@ Mostly taken from https://serverfault.com/questions/9708/what-is-a-pem-file-and-
 * https://bjornjohansen.no/public-key-pinning – security: why HSTS is not enough
 * https://msol.io/blog/tech/create-a-self-signed-ecc-certificate/
 * https://wiki.openssl.org/index.php/Command_Line_Elliptic_Curve_Operations
+* https://cipherli.st/ – Strong Ciphers for Apache, nginx and Lighttpd (n00bs – read the warnings!)
+
